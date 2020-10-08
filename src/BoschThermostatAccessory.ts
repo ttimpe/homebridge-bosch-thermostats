@@ -45,6 +45,11 @@ export default class BoschThermostatAccessory {
         .on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
         .on('set', this.handleTemperatureDisplayUnitsSet.bind(this));
 
+      // create handlers for required characteristics
+      this.service.getCharacteristic(this.Characteristic.CurrentRelativeHumidity)
+        .on('get', this.handleCurrentRelativeHumidityGet.bind(this));
+
+
   }
 
   /**
@@ -122,7 +127,7 @@ export default class BoschThermostatAccessory {
     this.log.debug('Triggered GET TemperatureDisplayUnits');
 
     // set this to a valid value for TemperatureDisplayUnits
-    const currentValue = 1;
+    const currentValue = 0;
 
     callback(null, currentValue);
   }
@@ -134,6 +139,10 @@ export default class BoschThermostatAccessory {
     this.log.debug('Triggered SET TemperatureDisplayUnits:',value);
 
     callback(null);
+  }
+
+  handleCurrentRelativeHumidityGet(callback: CharacteristicGetCallback) {
+  	callback(null, this.thermostat.humidityPercentage)
   }
 
 }

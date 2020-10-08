@@ -158,9 +158,15 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 		})	
 	}
 
+	setTemperature(device: BoschThermostat, temperature: number) {
+		
+	}
+
 	configureAccessory(accessory: PlatformAccessory) {
 		this.accessories.push(accessory)
 	}
+
+
 
 
 

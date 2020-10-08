@@ -104,7 +104,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 				boschThermostat.childDeviceIds = devicesResponse[i].childDeviceIds
 
 				var hmDevice: any = devicesResponse.find((hmDevice: any) => hmDevice.id === boschThermostat.childDeviceIds[0])
-				boschThermostat.name = hmDevice.name
+				boschThermostat.name = devicesResponse[i].serial + ' ' + hmDevice.name
 				this.boschThermostats.push(boschThermostat)
 
 				const uuid = this.api.hap.uuid.generate(boschThermostat.id)
@@ -113,13 +113,12 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 				if (accessory) {
 					this.log.info('Restoring cached accessory', accessory.displayName)
 					accessory.context.deviceId = boschThermostat.id
-					accessory.context.name = boschThermostat.name
 					this.api.updatePlatformAccessories([accessory])
 				} else {
 					this.log.info('Adding new device:', boschThermostat.name)
 					accessory = new this.api.platformAccessory(boschThermostat.name, uuid)
 					accessory.context.deviceId = boschThermostat.id
-					accessory.context.name = boschThermostat.name
+					
 					this.api.registerPlatformAccessories('homebridge-bosch', 'BoschThermostat', [accessory])
 				}
 				let boschThermostatAccessory = new BoschThermostatAccessory(this, accessory, this.log, boschThermostat)

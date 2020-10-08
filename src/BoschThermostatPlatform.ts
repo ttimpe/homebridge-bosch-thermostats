@@ -48,10 +48,10 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 				console.log("Already paired");
 			}
 
-			return this.bshb.getBshcClient().getRooms();
-		})).subscribe(getRoomsResponse => {
-			this.log.info("GetRooms:");
-			this.log.info(getRoomsResponse.parsedResponse.toString());
+			return this.bshb.getBshcClient().getDevices();
+		})).subscribe(getDevicesResponse => {
+			this.log.info("GetDevices:");
+			this.log.info(getDevicesResponse.parsedResponse.toString());
 
 		});
 

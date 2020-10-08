@@ -90,7 +90,7 @@ export default class BoschThermostatAccessory {
     // set this to a valid value for CurrentTemperature
     const currentValue = 1;
 
-    callback(null, currentValue);
+    callback(null, this.thermostat.currentTemperature);
   }
 
 
@@ -103,7 +103,7 @@ export default class BoschThermostatAccessory {
     // set this to a valid value for TargetTemperature
     const currentValue = 1;
 
-    callback(null, currentValue);
+    callback(null, this.thermostat.targetTemperature);
   }
 
   /**

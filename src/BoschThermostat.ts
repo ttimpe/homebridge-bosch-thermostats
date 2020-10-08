@@ -3,7 +3,7 @@ export default class BoschThermostat {
 	public name: string
 	public serial: string
 	public childDeviceIds: string[]
-	public humidityPercentage: number
-	public currentTemperature: number
-	public desiredTemperature: number
+	public humidityPercentage: number = 50
+	public currentTemperature: number = 0
+	public targetTemperature: number = 0
 }

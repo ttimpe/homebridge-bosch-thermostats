@@ -90,7 +90,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 			return this.bshb.getBshcClient().getDevices();
 		})).subscribe(getDevicesResponse => {
 			this.createAccessories(getDevicesResponse.parsedResponse)
-
+			this.updateValues()
 		});
 	}
 
@@ -126,12 +126,37 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
  
 			}
 		}
+	
+		
+	}
+
+	updateValues() {
 		this.bshb.getBshcClient().getDevicesServices().subscribe(getServicesResponse => {
 			this.log.debug('got services')
 			this.log.debug(getServicesResponse.parsedResponse.toString())
-		})
-		
+			
+			for (var i=0; i<this.boschThermostats.length; i++) {
+				let propertiesForDevice = getServicesResponse.parsedResponse.filter((propertiesForDevice:any) => propertiesForDevice.id === this.boschThermostats[i].id)
+				for (let j=0; j<propertiesForDevice.length; j++) {
+					switch (propertiesForDevice[j].id) {
+						case 'TemperatureLevel':
+							this.boschThermostats[i].currentTemperature = propertiesForDevice[j].state.Temperature
+						break;
+						case 'RoomClimateControl':
+							this.boschThermostats[i].targetTemperature = propertiesForDevice[j].state.setpointTemperature
+						break;
+						case 'HumidityLevel':
+							this.boschThermostats[i].humidityPercentage = propertiesForDevice[j].state.humdity
+						break;
+						default:
+						break;
+					}
+				}
+			}
+
+		})	
 	}
+
 	configureAccessory(accessory: PlatformAccessory) {
 		this.accessories.push(accessory)
 	}

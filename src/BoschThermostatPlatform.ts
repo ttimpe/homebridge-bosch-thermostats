@@ -118,7 +118,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 					accessory = new this.api.platformAccessory(boschThermostat.name, uuid)
 					accessory.context.deviceId = boschThermostat.id
 					accessory.context.name = boschThermostat.name
-					this.api.registerPlatformAccessories('homebridge-bosch-thermostats', 'BoschThermostat', [accessory])
+					this.api.registerPlatformAccessories('homebridge-bosch', 'BoschThermostat', [accessory])
 				}
 				let boschThermostatAccessory = new BoschThermostatAccessory(this, accessory, this.log, boschThermostat)
 				this.thermostats.push(boschThermostatAccessory)

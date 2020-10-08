@@ -7,8 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
-  "author": "",
+  "author": "ttimpe",
   "license": "ISC",
+  "engines": {
+    "node": ">=12.0.0",
+    "homebridge": ">=1.0.0"
+  },
   "dependencies": {
     "bosch-smart-home-bridge": "^0.2.12",
     "selfsigned": "^1.10.8"

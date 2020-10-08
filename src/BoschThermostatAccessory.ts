@@ -25,8 +25,7 @@ export default class BoschThermostatAccessory {
 			.setCharacteristic(this.platform.Characteristic.Model, 'Room Thermostat')
 			.setCharacteristic(this.platform.Characteristic.SerialNumber, this.thermostat.serial)
 
-	  this.service = new this.Service.Thermostat()
-
+	  this.service = this.accessory.getService(this.Service.Thermostat) || this.accessory.addService(this.Service.Thermostat)
       // create handlers for required characteristics
       this.service.getCharacteristic(this.Characteristic.CurrentHeatingCoolingState)
         .on('get', this.handleCurrentHeatingCoolingStateGet.bind(this));
@@ -46,12 +45,6 @@ export default class BoschThermostatAccessory {
         .on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
         .on('set', this.handleTemperatureDisplayUnitsSet.bind(this));
 
-        this.enabledServices.push(this.service)
-  }
-
-  getServices() {
-  	this.log.info("Get services called")
-  	return this.enabledServices
   }
 
   /**

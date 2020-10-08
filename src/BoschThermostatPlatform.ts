@@ -24,6 +24,8 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	private certificate: string
 	private privateKey: string
 
+	private timer: any
+
 	constructor(public readonly log: Logger, public readonly config: PlatformConfig, public readonly api: API) {
 		api.on('didFinishLaunching', () => {
 			this.didFinishLaunching();
@@ -90,6 +92,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 			return this.bshb.getBshcClient().getDevices();
 		})).subscribe(getDevicesResponse => {
 			this.createAccessories(getDevicesResponse.parsedResponse)
+			this.timer = setInterval(() => this.updateValues(), 10000)
 			this.updateValues()
 		});
 	}
@@ -159,7 +162,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	}
 
 	setTemperature(device: BoschThermostat, temperature: number) {
-		
+
 	}
 
 	configureAccessory(accessory: PlatformAccessory) {

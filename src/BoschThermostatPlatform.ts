@@ -17,7 +17,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	public bshb: BoschSmartHomeBridge
 
 
-	public accessories: PlatformAccessory[]
+	public accessories: PlatformAccessory[] = []
 	public thermostats: BoschThermostatAccessory[] = []
 	public boschThermostats: BoschThermostat[] = []
 

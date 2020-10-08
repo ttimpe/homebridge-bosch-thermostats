@@ -136,11 +136,12 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 			this.log.debug(getServicesResponse.parsedResponse.toString())
 			
 			for (var i=0; i<this.boschThermostats.length; i++) {
-				let propertiesForDevice = getServicesResponse.parsedResponse.filter((propertiesForDevice:any) => propertiesForDevice.id === this.boschThermostats[i].id)
+				let propertiesForDevice = getServicesResponse.parsedResponse.filter((propertiesForDevice:any) => propertiesForDevice.deviceId === this.boschThermostats[i].id)
 				for (let j=0; j<propertiesForDevice.length; j++) {
+					this.log.debug("Got property " + propertiesForDevice[j].id + ' for device ' + this.boschThermostats[i].id)
 					switch (propertiesForDevice[j].id) {
 						case 'TemperatureLevel':
-							this.boschThermostats[i].currentTemperature = propertiesForDevice[j].state.Temperature
+							this.boschThermostats[i].currentTemperature = propertiesForDevice[j].state.temperature
 						break;
 						case 'RoomClimateControl':
 							this.boschThermostats[i].targetTemperature = propertiesForDevice[j].state.setpointTemperature

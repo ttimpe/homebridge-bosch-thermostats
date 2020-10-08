@@ -7,6 +7,8 @@ import {BoschSmartHomeBridge, BoschSmartHomeBridgeBuilder, BshbUtils } from 'bos
 
 import BoschThermostatAccessory from './BoschThermostatAccessory'
 
+const fs = require('fs')
+
 export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	public readonly Service: typeof Service = this.api.hap.Service;
 	public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
@@ -17,19 +19,41 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	public accessories: PlatformAccessory[]
 	public thermostats: BoschThermostatAccessory[]
 
+	private certificate: string
+	private privateKey: string
+
 	constructor(public readonly log: Logger, public readonly config: PlatformConfig, public readonly api: API) {
 		api.on('didFinishLaunching', () => {
 			this.didFinishLaunching();
 		})
 	}
 
+	loadCertificate (certificatePath: string, privateKeyPath: string) {
+		fs.readFile(certificatePath, 'utf-8', (err: any, certData: string) => {
+			fs.readFile(privateKeyPath, 'utf-8', (err: any, keyData: string) => {
+				this.certificate = certData;
+				this.privateKey = keyData;
+				this.establishConnection()
+			})
+		})
+	}
+
+
 	didFinishLaunching() {
 		this.log.info('connecting to host ' + this.config.host + ' using systemPassword ' + this.config.systemPassword)
-		const certificate = BshbUtils.generateClientCertificate();
+		this.loadCertificate(this.config.certificatePath, this.config.privateKeyPath)
+
+
+		
+
+
+	}
+
+	establishConnection() {
 		this.bshb = BoschSmartHomeBridgeBuilder.builder()
 		.withHost(this.config.host)
-		.withClientCert(certificate.cert)
-		.withClientPrivateKey(certificate.private)
+		.withClientCert(this.certificate)
+		.withClientPrivateKey(this.privateKey)
 		.build();
 
 
@@ -54,8 +78,6 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 			this.log.info(getDevicesResponse.parsedResponse.toString());
 
 		});
-
-
 	}
 
 

@@ -150,8 +150,8 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 							this.boschThermostats[i].targetTemperature = propertiesForDevice[j].state.setpointTemperature
 						break;
 						case 'HumidityLevel':
-							this.log.debug('setting humdity to', propertiesForDevice[j].state.humdity)
-							this.boschThermostats[i].humidityPercentage = propertiesForDevice[j].state.humdity
+							this.log.debug('setting humdity to', propertiesForDevice[j].state.humidity)
+							this.boschThermostats[i].humidityPercentage = propertiesForDevice[j].state.humidity
 						break;
 						default:
 

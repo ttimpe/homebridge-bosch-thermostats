@@ -139,7 +139,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 			this.log.debug(getServicesResponse.parsedResponse.toString())
 			
 			for (var i=0; i<this.boschThermostats.length; i++) {
-				let propertiesForDevice = getServicesResponse.parsedResponse.filter((propertiesForDevice:any) => propertiesForDevice.deviceId === this.boschThermostats[i].id)
+				let propertiesForDevice = getServicesResponse.parsedResponse.filter((propertiesForDevice:any) => (propertiesForDevice.deviceId === this.boschThermostats[i].id) || (propertiesForDevice.deviceId === this.boschThermostats[i].childDeviceIds[0]))
 				for (let j=0; j<propertiesForDevice.length; j++) {
 					this.log.debug("Got property " + propertiesForDevice[j].id + ' for device ' + this.boschThermostats[i].id)
 					switch (propertiesForDevice[j].id) {
@@ -150,9 +150,11 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 							this.boschThermostats[i].targetTemperature = propertiesForDevice[j].state.setpointTemperature
 						break;
 						case 'HumidityLevel':
+							this.log.debug('setting humdity to', propertiesForDevice[j].state.humdity)
 							this.boschThermostats[i].humidityPercentage = propertiesForDevice[j].state.humdity
 						break;
 						default:
+
 						break;
 					}
 				}

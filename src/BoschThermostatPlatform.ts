@@ -101,8 +101,10 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 			if (devicesResponse[i].manufacturer == 'BOSCH' && devicesResponse[i].deviceModel == 'ROOM_CLIMATE_CONTROL') {
 				let boschThermostat: BoschThermostat = new BoschThermostat()
 				boschThermostat.id = devicesResponse[i].id
-				boschThermostat.name = devicesResponse[i].name
 				boschThermostat.childDeviceIds = devicesResponse[i].childDeviceIds
+
+				var hmDevice: any = devicesResponse.find((hmDevice: any) => hmDevice.id === boschThermostat.childDeviceIds[0])
+				boschThermostat.name = hmDevice.name
 				this.boschThermostats.push(boschThermostat)
 
 				const uuid = this.api.hap.uuid.generate(boschThermostat.id)

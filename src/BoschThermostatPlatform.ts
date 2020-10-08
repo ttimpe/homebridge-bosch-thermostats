@@ -164,7 +164,19 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	}
 
 	setTemperature(device: BoschThermostat, temperature: number) {
+		const path = '/devices/' + device.id + '/services/RoomClimateControl'
 
+		const value = {
+         "@type":"climateControlState",
+         "setpointTemperature": temperature
+		}
+
+
+
+		this.bshb.getBshcClient().putState(path, value).subscribe(setResponse => {
+			this.log.info('Set temperature of ' + device.name + ' to '+ temperature)
+			device.targetTemperature = temperature
+		})
 	}
 
 	configureAccessory(accessory: PlatformAccessory) {

@@ -118,6 +118,8 @@ export default class BoschThermostatAccessory {
     this.log.debug('Triggered SET TargetTemperature:',value);
 
     callback(null);
+
+    this.platform.setTemperature(this.thermostat, value)
   }
 
   /**

@@ -46,8 +46,8 @@ export default class BoschThermostatAccessory {
         .on('set', this.handleTemperatureDisplayUnitsSet.bind(this));
 
       // create handlers for required characteristics
-  //    this.service.getCharacteristic(this.Characteristic.CurrentRelativeHumidity)
-    //    .on('get', this.handleCurrentRelativeHumidityGet.bind(this));
+     this.service.getCharacteristic(this.Characteristic.CurrentRelativeHumidity)
+     .on('get', this.handleCurrentRelativeHumidityGet.bind(this));
 
 
   }

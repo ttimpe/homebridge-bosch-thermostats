@@ -22,7 +22,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	didFinishLaunching() {
 		const certificate = BshbUtils.generateClientCertificate();
 		this.bshb = BoschSmartHomeBridgeBuilder.builder()
-    		.withHost('192.168.0.10')
+    		.withHost(this.config.host)
     		.withClientCert(certificate.cert)
     		.withClientPrivateKey(certificate.private)
     		.build();

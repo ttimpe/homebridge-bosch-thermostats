@@ -126,11 +126,16 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
  
 			}
 		}
+		this.bshb.getBshcClient().getDevicesServices().subscribe(getServicesResponse => {
+			this.log.debug('got services')
+			this.log.debug(getServicesResponse.parsedResponse.toString())
+		})
 		
 	}
 	configureAccessory(accessory: PlatformAccessory) {
 		this.accessories.push(accessory)
 	}
+
 
 
 

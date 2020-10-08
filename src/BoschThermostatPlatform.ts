@@ -30,11 +30,22 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 
 	loadCertificate (certificatePath: string, privateKeyPath: string) {
 		fs.readFile(certificatePath, 'utf-8', (err: any, certData: string) => {
-			fs.readFile(privateKeyPath, 'utf-8', (err: any, keyData: string) => {
-				this.certificate = certData;
-				this.privateKey = keyData;
-				this.establishConnection()
-			})
+			if (err) {
+				this.log.error("Could not load cert from " + certificatePath)
+				return
+			} else {
+				
+				fs.readFile(privateKeyPath, 'utf-8', (keyError: any, keyData: string) => {
+					if (keyError) {
+						this.log.error("Could not load private key from " + privateKeyPath)
+						return
+					} else {
+						this.certificate = certData;
+						this.privateKey = keyData;
+						this.establishConnection()
+					}
+				})
+			}
 		})
 	}
 
@@ -50,6 +61,10 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	}
 
 	establishConnection() {
+		this.log.info('cert is', this.certificate)
+		this.log.info('key is', this.privateKey)
+
+
 		this.bshb = BoschSmartHomeBridgeBuilder.builder()
 		.withHost(this.config.host)
 		.withClientCert(this.certificate)

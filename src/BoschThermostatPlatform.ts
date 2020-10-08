@@ -144,20 +144,31 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 					this.log.debug("Got property " + propertiesForDevice[j].id + ' for device ' + this.boschThermostats[i].id)
 					switch (propertiesForDevice[j].id) {
 						case 'TemperatureLevel':
+				
 							this.boschThermostats[i].currentTemperature = propertiesForDevice[j].state.temperature
 						break;
 						case 'RoomClimateControl':
+
 							this.boschThermostats[i].targetTemperature = propertiesForDevice[j].state.setpointTemperature
+
 						break;
 						case 'HumidityLevel':
 							this.log.debug('setting humdity to', propertiesForDevice[j].state.humidity)
 							this.boschThermostats[i].humidityPercentage = propertiesForDevice[j].state.humidity
+
 						break;
 						default:
 
 						break;
 					}
 				}
+			}
+
+			for (var i=0; i<this.thermostats.length; i++) {
+				this.thermostats[i].service.updateCharacteristic(this.Characteristic.CurrentTemperature, this.thermostats[i].thermostat.currentTemperature)
+				this.thermostats[i].service.updateCharacteristic(this.Characteristic.TargetTemperature, this.thermostats[i].thermostat.targetTemperature)
+				this.thermostats[i].service.updateCharacteristic(this.Characteristic.CurrentRelativeHumidity, this.thermostats[i].thermostat.humidityPercentage)
+
 			}
 
 		})	
@@ -181,6 +192,9 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 
 	configureAccessory(accessory: PlatformAccessory) {
 		this.accessories.push(accessory)
+	}
+	getBoschAccessoryWithId(deviceId: string) {
+		return this.thermostats.find((thermostat: BoschThermostatAccessory) => thermostat.thermostat.id === deviceId).accessory
 	}
 
 

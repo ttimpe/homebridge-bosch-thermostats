@@ -6,14 +6,12 @@ export default class BoschThermostatAccessory {
 	public readonly Service: typeof Service = this.platform.api.hap.Service;
 	public readonly Characteristic: typeof Characteristic = this.platform.api.hap.Characteristic;
 
-	private service: Service
+	public service: Service
 
 
-	private thermostat: BoschThermostat
 	private enabledServices: Service[] = []
 
-	constructor(public readonly platform: BoschThermostatPlatform, public accessory: PlatformAccessory, public readonly log: Logger, thermostat: BoschThermostat) {
-	this.thermostat = thermostat
+	constructor(public readonly platform: BoschThermostatPlatform, public accessory: PlatformAccessory, public readonly log: Logger, public readonly thermostat: BoschThermostat) {
 
 	this.log.info("Created new BoschThermostatAccessory")
 	this.log.info(JSON.stringify(this.thermostat))
@@ -32,14 +30,29 @@ export default class BoschThermostatAccessory {
 
       this.service.getCharacteristic(this.Characteristic.TargetHeatingCoolingState)
         .on('get', this.handleTargetHeatingCoolingStateGet.bind(this))
-        .on('set', this.handleTargetHeatingCoolingStateSet.bind(this));
+        .on('set', this.handleTargetHeatingCoolingStateSet.bind(this))
+        .setProps({
+			validValues:[
+			this.platform.Characteristic.TargetHeatingCoolingState.AUTO,
+			this.platform.Characteristic.TargetHeatingCoolingState.HEAT,
+			this.platform.Characteristic.TargetHeatingCoolingState.OFF
+			]
+		})
 
       this.service.getCharacteristic(this.Characteristic.CurrentTemperature)
-        .on('get', this.handleCurrentTemperatureGet.bind(this));
+        .on('get', this.handleCurrentTemperatureGet.bind(this))
+        .setProps({
+			minStep: 0.1,
+		})
 
       this.service.getCharacteristic(this.Characteristic.TargetTemperature)
         .on('get', this.handleTargetTemperatureGet.bind(this))
-        .on('set', this.handleTargetTemperatureSet.bind(this));
+        .on('set', this.handleTargetTemperatureSet.bind(this))
+        .setProps({
+			minStep: 0.1,
+			minValue: 5,
+			maxValue: 30
+		});
 
       this.service.getCharacteristic(this.Characteristic.TemperatureDisplayUnits)
         .on('get', this.handleTemperatureDisplayUnitsGet.bind(this))

@@ -89,7 +89,6 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 
 			return this.bshb.getBshcClient().getDevices();
 		})).subscribe(getDevicesResponse => {
-			this.log.info("GetDevices:");
 			this.createAccessories(getDevicesResponse.parsedResponse)
 
 		});
@@ -107,7 +106,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 				boschThermostat.name = devicesResponse[i].serial + ' ' + hmDevice.name
 				this.boschThermostats.push(boschThermostat)
 
-				const uuid = this.api.hap.uuid.generate(boschThermostat.id)
+				const uuid = this.api.hap.uuid.generate('homebridge-bosch-' + boschThermostat.id)
 				let accessory = this.accessories.find(accessory => accessory.UUID === uuid)
 
 				if (accessory) {

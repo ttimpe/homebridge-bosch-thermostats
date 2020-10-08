@@ -14,6 +14,11 @@ export default class BoschThermostatAccessory {
 
 	constructor(public readonly platform: BoschThermostatPlatform, public accessory: PlatformAccessory, public readonly log: Logger, thermostat: BoschThermostat) {
 	this.thermostat = thermostat
+
+	this.log.info("Created new BoschThermostatAccessory")
+	this.log.info(JSON.stringify(this.thermostat))
+
+
 	this.accessory.getService(this.platform.Service.AccessoryInformation)!
 			.setCharacteristic(this.platform.Characteristic.Manufacturer, 'BOSCH')
 			.setCharacteristic(this.platform.Characteristic.FirmwareRevision, '1.0.0')
@@ -45,6 +50,7 @@ export default class BoschThermostatAccessory {
   }
 
   getServices() {
+  	this.log.info("Get services called")
   	return this.enabledServices
   }
 

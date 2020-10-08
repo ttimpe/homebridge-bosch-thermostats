@@ -104,6 +104,7 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 
 				var hmDevice: any = devicesResponse.find((hmDevice: any) => hmDevice.id === boschThermostat.childDeviceIds[0])
 				boschThermostat.name = devicesResponse[i].serial + ' ' + hmDevice.name
+				boschThermostat.serial = devicesResponse[i].serial
 				this.boschThermostats.push(boschThermostat)
 
 				const uuid = this.api.hap.uuid.generate('homebridge-bosch-' + boschThermostat.id)

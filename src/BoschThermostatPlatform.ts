@@ -6,6 +6,7 @@ import {BehaviorSubject, EMPTY, Observable} from "rxjs";
 import {BoschSmartHomeBridge, BoschSmartHomeBridgeBuilder, BshbUtils } from 'bosch-smart-home-bridge';
 
 import BoschThermostatAccessory from './BoschThermostatAccessory'
+import BoschThermostat from './BoschThermostat'
 
 const fs = require('fs')
 
@@ -17,7 +18,8 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 
 
 	public accessories: PlatformAccessory[]
-	public thermostats: BoschThermostatAccessory[]
+	public thermostats: BoschThermostatAccessory[] = []
+	public boschThermostats: BoschThermostat[] = []
 
 	private certificate: string
 	private privateKey: string
@@ -61,8 +63,6 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 	}
 
 	establishConnection() {
-		this.log.info('cert is', this.certificate)
-		this.log.info('key is', this.privateKey)
 
 
 		this.bshb = BoschSmartHomeBridgeBuilder.builder()
@@ -90,18 +90,42 @@ export default class BoschThermostatPlatform implements DynamicPlatformPlugin {
 			return this.bshb.getBshcClient().getDevices();
 		})).subscribe(getDevicesResponse => {
 			this.log.info("GetDevices:");
-			this.log.info(getDevicesResponse.parsedResponse.toString());
+			this.createAccessories(getDevicesResponse.parsedResponse)
 
 		});
 	}
 
 
-	createAccessories() {
-		this.log.info('Starting getDevices')
-		this.bshb.getBshcClient().getDevices().subscribe(response => {
-			this.log.info("Got response")
-			this.log.info(response.toString())
-		})
+	createAccessories(devicesResponse: any) {
+		for (var i=0; i<devicesResponse.length; i++) {
+			if (devicesResponse[i].manufacturer == 'BOSCH' && devicesResponse[i].deviceModel == 'ROOM_CLIMATE_CONTROL') {
+				let boschThermostat: BoschThermostat = new BoschThermostat()
+				boschThermostat.id = devicesResponse[i].id
+				boschThermostat.name = devicesResponse[i].name
+				boschThermostat.childDeviceIds = devicesResponse[i].childDeviceIds
+				this.boschThermostats.push(boschThermostat)
+
+				const uuid = this.api.hap.uuid.generate(boschThermostat.id)
+				let accessory = this.accessories.find(accessory => accessory.UUID === uuid)
+
+				if (accessory) {
+					this.log.info('Restoring cached accessory', accessory.displayName)
+					accessory.context.deviceId = boschThermostat.id
+					accessory.context.name = boschThermostat.name
+					this.api.updatePlatformAccessories([accessory])
+				} else {
+					this.log.info('Adding new device:', boschThermostat.name)
+					accessory = new this.api.platformAccessory(boschThermostat.name, uuid)
+					accessory.context.deviceId = boschThermostat.id
+					accessory.context.name = boschThermostat.name
+					this.api.registerPlatformAccessories('homebridge-bosch-thermostats', 'BoschThermostat', [accessory])
+				}
+				let boschThermostatAccessory = new BoschThermostatAccessory(this, accessory, this.log, boschThermostat)
+				this.thermostats.push(boschThermostatAccessory)
+ 
+			}
+		}
+		
 	}
 	configureAccessory(accessory: PlatformAccessory) {
 		this.accessories.push(accessory)

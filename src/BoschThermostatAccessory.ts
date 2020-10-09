@@ -13,54 +13,57 @@ export default class BoschThermostatAccessory {
 
 	constructor(public readonly platform: BoschThermostatPlatform, public accessory: PlatformAccessory, public readonly log: Logger, public readonly thermostat: BoschThermostat) {
 
-	this.log.info("Created new BoschThermostatAccessory")
-	this.log.info(JSON.stringify(this.thermostat))
+    this.log.info("Created new BoschThermostatAccessory")
+    this.log.info(JSON.stringify(this.thermostat))
 
 
-	this.accessory.getService(this.platform.Service.AccessoryInformation)!
-			.setCharacteristic(this.platform.Characteristic.Manufacturer, 'BOSCH')
-			.setCharacteristic(this.platform.Characteristic.FirmwareRevision, '1.0.0')
-			.setCharacteristic(this.platform.Characteristic.Model, 'Room Thermostat')
-			.setCharacteristic(this.platform.Characteristic.SerialNumber, this.thermostat.serial)
+    this.accessory.getService(this.platform.Service.AccessoryInformation)!
+    .setCharacteristic(this.platform.Characteristic.Manufacturer, 'BOSCH')
+    .setCharacteristic(this.platform.Characteristic.FirmwareRevision, '1.0.0')
+    .setCharacteristic(this.platform.Characteristic.Model, 'Room Thermostat')
+    .setCharacteristic(this.platform.Characteristic.SerialNumber, this.thermostat.serial)
 
-	  this.service = this.accessory.getService(this.Service.Thermostat) || this.accessory.addService(this.Service.Thermostat)
-      // create handlers for required characteristics
-      this.service.getCharacteristic(this.Characteristic.CurrentHeatingCoolingState)
-        .on('get', this.handleCurrentHeatingCoolingStateGet.bind(this));
+    this.service = this.accessory.getService(this.Service.Thermostat) || this.accessory.addService(this.Service.Thermostat)
+    // create handlers for required characteristics
+    this.service.getCharacteristic(this.Characteristic.CurrentHeatingCoolingState)
+    .on('get', this.handleCurrentHeatingCoolingStateGet.bind(this));
 
-      this.service.getCharacteristic(this.Characteristic.TargetHeatingCoolingState)
-        .on('get', this.handleTargetHeatingCoolingStateGet.bind(this))
-        .on('set', this.handleTargetHeatingCoolingStateSet.bind(this))
-        .setProps({
-			validValues:[
-			this.platform.Characteristic.TargetHeatingCoolingState.AUTO,
-			this.platform.Characteristic.TargetHeatingCoolingState.HEAT,
-			this.platform.Characteristic.TargetHeatingCoolingState.OFF
-			]
-		})
+    this.service.getCharacteristic(this.Characteristic.TargetHeatingCoolingState)
+    .on('get', this.handleTargetHeatingCoolingStateGet.bind(this))
+    .on('set', this.handleTargetHeatingCoolingStateSet.bind(this))
+    .setProps({
+      validValues:[
+      this.platform.Characteristic.TargetHeatingCoolingState.AUTO
+      ]
+    })
 
-      this.service.getCharacteristic(this.Characteristic.CurrentTemperature)
-        .on('get', this.handleCurrentTemperatureGet.bind(this))
-        .setProps({
-			minStep: 0.1,
-		})
+    this.service.getCharacteristic(this.Characteristic.CurrentTemperature)
+    .on('get', this.handleCurrentTemperatureGet.bind(this))
+    .setProps({
+      minStep: 0.1,
+    })
 
-      this.service.getCharacteristic(this.Characteristic.TargetTemperature)
-        .on('get', this.handleTargetTemperatureGet.bind(this))
-        .on('set', this.handleTargetTemperatureSet.bind(this))
-        .setProps({
-			minStep: 0.1,
-			minValue: 5,
-			maxValue: 30
-		});
+    this.service.getCharacteristic(this.Characteristic.TargetTemperature)
+    .on('get', this.handleTargetTemperatureGet.bind(this))
+    .on('set', this.handleTargetTemperatureSet.bind(this))
+    .setProps({
+      minStep: 0.1,
+      minValue: 5,
+      maxValue: 30
+    });
 
-      this.service.getCharacteristic(this.Characteristic.TemperatureDisplayUnits)
-        .on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
-        .on('set', this.handleTemperatureDisplayUnitsSet.bind(this));
+    this.service.getCharacteristic(this.Characteristic.TemperatureDisplayUnits)
+    .on('get', this.handleTemperatureDisplayUnitsGet.bind(this))
+    .on('set', this.handleTemperatureDisplayUnitsSet.bind(this))
+    .setProps({
+      validValues:[
+      this.platform.Characteristic.TemperatureDisplayUnits.CELSIUS
+      ]
+    })
 
-      // create handlers for required characteristics
-     this.service.getCharacteristic(this.Characteristic.CurrentRelativeHumidity)
-     .on('get', this.handleCurrentRelativeHumidityGet.bind(this));
+    // create handlers for required characteristics
+    this.service.getCharacteristic(this.Characteristic.CurrentRelativeHumidity)
+    .on('get', this.handleCurrentRelativeHumidityGet.bind(this));
 
 
   }
@@ -68,96 +71,96 @@ export default class BoschThermostatAccessory {
   /**
    * Handle requests to get the current value of the "Current Heating Cooling State" characteristic
    */
-  handleCurrentHeatingCoolingStateGet(callback: CharacteristicGetCallback) {
-    this.log.debug('Triggered GET CurrentHeatingCoolingState');
+   handleCurrentHeatingCoolingStateGet(callback: CharacteristicGetCallback) {
+     this.log.debug('Triggered GET CurrentHeatingCoolingState');
 
-    // set this to a valid value for CurrentHeatingCoolingState
-    const currentValue = 1;
+     // set this to a valid value for CurrentHeatingCoolingState
+     const currentValue = 1;
 
-    callback(null, currentValue);
-  }
+     callback(null, currentValue);
+   }
 
 
   /**
    * Handle requests to get the current value of the "Target Heating Cooling State" characteristic
    */
-  handleTargetHeatingCoolingStateGet(callback: CharacteristicGetCallback) {
-    this.log.debug('Triggered GET TargetHeatingCoolingState');
+   handleTargetHeatingCoolingStateGet(callback: CharacteristicGetCallback) {
+     this.log.debug('Triggered GET TargetHeatingCoolingState');
 
-    // set this to a valid value for TargetHeatingCoolingState
-    const currentValue = 1;
+     // set this to a valid value for TargetHeatingCoolingState
+     const currentValue = 1;
 
-    callback(null, currentValue);
-  }
+     callback(null, currentValue);
+   }
 
   /**
    * Handle requests to set the "Target Heating Cooling State" characteristic
    */
-  handleTargetHeatingCoolingStateSet(value: any, callback: CharacteristicSetCallback) {
-    this.log.debug('Triggered SET TargetHeatingCoolingState:',value);
+   handleTargetHeatingCoolingStateSet(value: any, callback: CharacteristicSetCallback) {
+     this.log.debug('Triggered SET TargetHeatingCoolingState:',value);
 
-    callback(null);
-  }
+     callback(null);
+   }
 
   /**
    * Handle requests to get the current value of the "Current Temperature" characteristic
    */
-  handleCurrentTemperatureGet(callback: CharacteristicGetCallback) {
-    this.log.debug('Triggered GET CurrentTemperature');
+   handleCurrentTemperatureGet(callback: CharacteristicGetCallback) {
+     this.log.debug('Triggered GET CurrentTemperature');
 
-    // set this to a valid value for CurrentTemperature
-    const currentValue = 1;
+     // set this to a valid value for CurrentTemperature
+     const currentValue = 1;
 
-    callback(null, this.thermostat.currentTemperature);
-  }
+     callback(null, this.thermostat.currentTemperature);
+   }
 
 
   /**
    * Handle requests to get the current value of the "Target Temperature" characteristic
    */
-  handleTargetTemperatureGet(callback: CharacteristicGetCallback) {
-    this.log.debug('Triggered GET TargetTemperature');
+   handleTargetTemperatureGet(callback: CharacteristicGetCallback) {
+     this.log.debug('Triggered GET TargetTemperature');
 
-    // set this to a valid value for TargetTemperature
-    const currentValue = 1;
+     // set this to a valid value for TargetTemperature
+     const currentValue = 1;
 
-    callback(null, this.thermostat.targetTemperature);
-  }
+     callback(null, this.thermostat.targetTemperature);
+   }
 
   /**
    * Handle requests to set the "Target Temperature" characteristic
    */
-  handleTargetTemperatureSet(value: any, callback: CharacteristicSetCallback) {
-    this.log.debug('Triggered SET TargetTemperature:',value);
+   handleTargetTemperatureSet(value: any, callback: CharacteristicSetCallback) {
+     this.log.debug('Triggered SET TargetTemperature:',value);
 
-    callback(null);
+     callback(null);
 
-    this.platform.setTemperature(this.thermostat, value)
-  }
+     this.platform.setTemperature(this.thermostat, value)
+   }
 
   /**
    * Handle requests to get the current value of the "Temperature Display Units" characteristic
    */
-  handleTemperatureDisplayUnitsGet(callback: CharacteristicGetCallback) {
-    this.log.debug('Triggered GET TemperatureDisplayUnits');
+   handleTemperatureDisplayUnitsGet(callback: CharacteristicGetCallback) {
+     this.log.debug('Triggered GET TemperatureDisplayUnits');
 
-    // set this to a valid value for TemperatureDisplayUnits
-    const currentValue = 0;
+     // set this to a valid value for TemperatureDisplayUnits
+     const currentValue = 0;
 
-    callback(null, currentValue);
-  }
+     callback(null, currentValue);
+   }
 
   /**
    * Handle requests to set the "Temperature Display Units" characteristic
    */
-  handleTemperatureDisplayUnitsSet(value: any, callback: CharacteristicSetCallback) {
-    this.log.debug('Triggered SET TemperatureDisplayUnits:',value);
+   handleTemperatureDisplayUnitsSet(value: any, callback: CharacteristicSetCallback) {
+     this.log.debug('Triggered SET TemperatureDisplayUnits:',value);
 
-    callback(null);
-  }
+     callback(null);
+   }
 
-  handleCurrentRelativeHumidityGet(callback: CharacteristicGetCallback) {
-  	callback(null, this.thermostat.humidityPercentage)
-  }
+   handleCurrentRelativeHumidityGet(callback: CharacteristicGetCallback) {
+     callback(null, this.thermostat.humidityPercentage)
+   }
 
-}
+ }

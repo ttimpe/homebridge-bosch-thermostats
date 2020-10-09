@@ -75,8 +75,11 @@ export default class BoschThermostatAccessory {
      this.log.debug('Triggered GET CurrentHeatingCoolingState');
 
      // set this to a valid value for CurrentHeatingCoolingState
-
-     callback(null, this.platform.Characteristic.TargetHeatingCoolingState.AUTO);
+     if (this.thermostat.currentTemperature >= this.thermostat.targetTemperature) {
+       callback(null, this.platform.Characteristic.CurrentHeatingCoolingState.OFF)
+     } else {
+       callback(null, this.platform.Characteristic.CurrentHeatingCoolingState.HEAT)
+     }
    }
 
 

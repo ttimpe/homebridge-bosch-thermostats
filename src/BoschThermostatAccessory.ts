@@ -75,9 +75,8 @@ export default class BoschThermostatAccessory {
      this.log.debug('Triggered GET CurrentHeatingCoolingState');
 
      // set this to a valid value for CurrentHeatingCoolingState
-     const currentValue = 1;
 
-     callback(null, currentValue);
+     callback(null, this.platform.Characteristic.TargetHeatingCoolingState.AUTO);
    }
 
 
@@ -88,9 +87,8 @@ export default class BoschThermostatAccessory {
      this.log.debug('Triggered GET TargetHeatingCoolingState');
 
      // set this to a valid value for TargetHeatingCoolingState
-     const currentValue = 1;
 
-     callback(null, currentValue);
+     callback(null, this.platform.Characteristic.TargetHeatingCoolingState.AUTO);
    }
 
   /**

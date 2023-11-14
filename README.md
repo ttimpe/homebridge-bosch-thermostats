@@ -1,5 +1,7 @@
 # homebridge-bosch-thermostats
 
+As Bosch has introduced HomeKit support for room thermostats, this Homebridge plugin is no longer necessary.
+
 This is a simple plugin that exposes Bosch room thermostats to HomeKit. I built it since they are, as of October 2020, not yet officially supporteed.
 
 I hope this doesn't need to exist very long.
